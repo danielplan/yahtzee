@@ -1,16 +1,5 @@
 import prompt from "prompt-sync";
 
-export const doFor = (
-  amount: number,
-  action: (index: number) => boolean
-): void => {
-  for (let i = 0; i < amount; i++) {
-    if (!action(i)) {
-      break;
-    }
-  }
-};
-
 const input = prompt();
 
 export const colorToCode = new Map<string, string>([

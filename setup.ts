@@ -1,23 +1,22 @@
-import { doFor, resetColor, colorToCode, readInput } from "./helpers";
+import { resetColor, colorToCode, readInput } from "./helpers";
 import type { Color, Game, Player, ScoreElement } from "./types";
 
 export const setupGame = (): Game => {
   console.clear();
-  console.log("Welcome to Yahtzee! Please follow the setup steps below!");
-  const players = setupPlayers();
+  console.log("Welcome to Yahtzee!\n\nPlease follow the setup steps below!");
+  const playerAmount = promptForPlayerAmount();
+  const players = setupPlayers([], 0, playerAmount);
   return { players };
 };
 
-const setupPlayers = (): Player[] => {
-  const playerAmount = promptForPlayerAmount();
-  const players: Player[] = [];
-  doFor(playerAmount, (playerNumber) => {
-    let p = setupPlayer(playerNumber);
-    players.push(p);
-    return true;
-  });
-
-  return players;
+const setupPlayers = (
+  players: Player[],
+  current: number,
+  amount: number
+): Player[] => {
+  if (current === amount) return players;
+  const newPlayers = [...players, setupPlayer(current)];
+  return setupPlayers(newPlayers, current + 1, amount);
 };
 
 const promptForPlayerAmount = (): number => {
@@ -67,67 +66,67 @@ const setupScore = (): ScoreElement[] => {
   return [
     {
       label: "Ones",
-      value: 0,
+      value: -1,
       priority: 1,
     },
     {
       label: "Twos",
-      value: 0,
+      value: -1,
       priority: 2,
     },
     {
       label: "Threes",
-      value: 0,
+      value: -1,
       priority: 3,
     },
     {
       label: "Fours",
-      value: 0,
+      value: -1,
       priority: 4,
     },
     {
       label: "Fives",
-      value: 0,
+      value: -1,
       priority: 5,
     },
     {
       label: "Sixes",
-      value: 0,
+      value: -1,
       priority: 6,
     },
     {
       label: "Three of a kind",
-      value: 0,
+      value: -1,
       priority: 7,
     },
     {
       label: "Four of a kind",
-      value: 0,
+      value: -1,
       priority: 8,
     },
     {
       label: "Full house",
-      value: 0,
+      value: -1,
       priority: 9,
     },
     {
       label: "Small straight",
-      value: 0,
+      value: -1,
       priority: 10,
     },
     {
       label: "Large straight",
-      value: 0,
+      value: -1,
       priority: 11,
     },
     {
       label: "Chance",
-      value: 0,
+      value: -1,
       priority: 12,
     },
     {
       label: "Yahtzee",
-      value: 0,
+      value: -1,
       priority: 13,
     },
   ];
