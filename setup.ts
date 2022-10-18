@@ -1,4 +1,5 @@
-import { resetColor, colorToCode, readInput } from "./helpers";
+import { colorToCode, readInput } from "./helpers";
+import { printColors } from "./printer";
 import type { Color, Game, Player, ScoreElement } from "./types";
 
 export const setupGame = (): Game => {
@@ -55,79 +56,84 @@ const promptForColor = (playerNumber: number): Color => {
   };
 };
 
-const printColors = (): void => {
-  console.log("Available colors:");
-  colorToCode.forEach((code, label) => {
-    console.log("✘  " + code + label + resetColor);
-  });
-};
-
 const setupScore = (): ScoreElement[] => {
   return [
     {
       label: "Ones",
       value: -1,
-      priority: 1,
+      location: "upper",
     },
     {
       label: "Twos",
       value: -1,
-      priority: 2,
+      location: "upper",
     },
     {
       label: "Threes",
       value: -1,
-      priority: 3,
+      location: "upper",
     },
     {
       label: "Fours",
       value: -1,
-      priority: 4,
+      location: "upper",
     },
     {
       label: "Fives",
       value: -1,
-      priority: 5,
+      location: "upper",
     },
     {
       label: "Sixes",
       value: -1,
-      priority: 6,
+      location: "upper",
+    },
+    {
+      label: "Bonus",
+      value: 0,
+      location: "upper",
+      calculated: true,
     },
     {
       label: "Three of a kind",
       value: -1,
-      priority: 7,
+      location: "lower",
     },
     {
       label: "Four of a kind",
       value: -1,
-      priority: 8,
+      location: "lower",
     },
     {
       label: "Full house",
       value: -1,
-      priority: 9,
+      location: "lower",
     },
     {
       label: "Small straight",
       value: -1,
-      priority: 10,
+      location: "lower",
     },
     {
       label: "Large straight",
       value: -1,
-      priority: 11,
+      location: "lower",
     },
     {
       label: "Chance",
       value: -1,
-      priority: 12,
+      location: "lower",
     },
     {
       label: "Yahtzee",
       value: -1,
-      priority: 13,
+      location: "lower",
+    },
+    {
+      label: "Total",
+      value: 0,
+      location: "lower",
+      calculated: true,
     },
   ];
 };
