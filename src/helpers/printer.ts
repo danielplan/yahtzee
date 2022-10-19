@@ -40,14 +40,8 @@ export const printScores = (players: Player[]) => {
 };
 
 const parseScoreValue = (value: number): string => {
-  switch (value) {
-    case -1:
-      return "0";
-    case 0:
-      return "✘";
-    default:
-      return value.toString();
-  }
+  if (value === -1) return "✘";
+  return value.toString();
 };
 
 export const printColors = (): void => {

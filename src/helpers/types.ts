@@ -24,3 +24,8 @@ export interface Die {
   fixed: boolean;
   currentValue: number;
 }
+
+export type DieCount = {
+  value: number;
+  count: number;
+};

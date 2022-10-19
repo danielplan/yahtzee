@@ -1,3 +1,4 @@
+import { DieCount } from "./../helpers/types";
 import { readInput, getNumberFromString } from "../helpers/helpers";
 import { printCategories } from "../helpers/printer";
 import type { Player, Die, ScoreElement } from "../helpers/types";
@@ -75,39 +76,39 @@ const calculateLowerScore = (dice: Die[], category: ScoreElement): number => {
     case "Four of a kind":
       const { count, value } = maxSameKind(dice);
       const neededAmount = category.label === "Three of a kind" ? 3 : 4;
-      return count >= neededAmount ? count * value : 0;
+      return count >= neededAmount ? count * value : -1;
     case "Full house":
       const { count: count1, value: value1 } = maxSameKind(dice);
       const { count: count2 } = maxSameKind(
         dice.filter((d) => d.currentValue !== value1)
       );
-      return count1 === 3 && count2 === 2 ? 25 : 0;
+      return count1 === 3 && count2 === 2 ? 25 : -1;
     case "Small straight":
     case "Large straight":
       const length = category.label === "Small straight" ? 4 : 5;
       const points = category.label === "Small straight" ? 30 : 50;
-      return maxSequenceLength(dice) >= length ? points : 0;
+      return maxSequenceLength(dice) >= length ? points : -1;
     case "Chance":
-      return dice.reduce((acc, d) => acc + d.currentValue, 0);
+      const sum = dice.reduce((acc, d) => acc + d.currentValue, 0);
+      return sum === 0 ? -1 : sum;
     case "Yahtzee":
-      return maxSameKind(dice).count === 5 ? 50 : 0;
+      return maxSameKind(dice).count === 5 ? 50 : -1;
   }
   return 0;
 };
 
-const maxSameKind = (
-  dice: Die[]
-): {
-  value: number;
-  count: number;
-} => {
+const maxSameKind = (dice: Die[]): DieCount => {
   const sameKind = dice.reduce((acc, current) => {
     if (acc[current.currentValue]) {
-      acc[current.currentValue] += 1;
-    } else {
-      acc[current.currentValue] = 1;
+      return {
+        ...acc,
+        [current.currentValue]: acc[current.currentValue] + 1,
+      };
     }
-    return acc;
+    return {
+      ...acc,
+      [current.currentValue]: 1,
+    };
   }, {} as Record<number, number>);
 
   return Object.keys(sameKind).reduce(
@@ -158,7 +159,7 @@ const getUpperBonusValue = (scores: ScoreElement[]): number => {
     }
     return acc;
   }, 0);
-  return sum >= 10 ? 35 : -1;
+  return sum >= 63 ? 35 : 0;
 };
 
 const getTotalValue = (scores: ScoreElement[]): number => {
@@ -190,5 +191,5 @@ const promptForChosenCategory = (player: Player): ScoreElement => {
 };
 
 const getAvailableScoreElements = (player: Player): ScoreElement[] => {
-  return player.score.filter((s) => s.value === -1 && s.calculated !== true);
+  return player.score.filter((s) => s.value === 0 && s.calculated !== true);
 };
