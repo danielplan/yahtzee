@@ -1,8 +1,8 @@
 import { runDiceTurn, setupDice } from "./dice";
-import { resetColor } from "./helpers";
-import { printScores } from "./printer";
+import { resetColor } from "../helpers/helpers";
+import { printScores } from "../helpers/printer";
 import { updateScore } from "./score";
-import type { Game, Player } from "./types";
+import type { Game, Player } from "../helpers/types";
 
 const TURNS_AMOUNT = 13;
 

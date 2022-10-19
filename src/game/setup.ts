@@ -1,6 +1,6 @@
-import { colorToCode, readInput } from "./helpers";
-import { printColors } from "./printer";
-import type { Color, Game, Player, ScoreElement } from "./types";
+import { colorToCode, readInput } from "../helpers/helpers";
+import { printColors } from "../helpers/printer";
+import type { Color, Game, Player, ScoreElement } from "../helpers/types";
 
 export const setupGame = (): Game => {
   console.clear();

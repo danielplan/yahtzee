@@ -1,6 +1,6 @@
-import { readInput, throwDie } from "./helpers";
-import { printDice } from "./printer";
-import { Die } from "./types";
+import { readInput, throwDie } from "../helpers/helpers";
+import { printDice } from "../helpers/printer";
+import { Die } from "../helpers/types";
 
 const DICE_AMOUNT = 5;
 const MAX_THROWS = 3;

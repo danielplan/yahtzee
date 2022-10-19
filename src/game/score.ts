@@ -1,6 +1,6 @@
-import { readInput, getNumberFromString } from "./helpers";
-import { printCategories } from "./printer";
-import { Player, Die, ScoreElement } from "./types";
+import { readInput, getNumberFromString } from "../helpers/helpers";
+import { printCategories } from "../helpers/printer";
+import { Player, Die, ScoreElement } from "../helpers/types";
 
 export const updateScore = (player: Player, dice: Die[]): Player => {
   const category = promptForChosenCategory(player);

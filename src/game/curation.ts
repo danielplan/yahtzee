@@ -1,4 +1,4 @@
-import { Game, Player } from "./types";
+import { Game, Player } from "../helpers/types";
 
 export const curateWinner = (game: Game): Game => {
   const winner = findWinner(game);
