@@ -27,7 +27,7 @@ export const printTable = (rows: string[][]) => {
         if (cell.length < 10) {
           rowText += "\t";
         }
-        rowText += "|";
+        rowText += "| ";
       }
     });
     console.log(rowText);
@@ -66,4 +66,23 @@ export const readInput = (
     return readInput(prompt, validate, errorMessage, autoCompleteValues);
   }
   return value;
+};
+
+export const getNumberFromString = (input: string): number => {
+  switch (input.toLowerCase()) {
+    case "ones":
+      return 1;
+    case "twos":
+      return 2;
+    case "threes":
+      return 3;
+    case "fours":
+      return 4;
+    case "fives":
+      return 5;
+    case "sixes":
+      return 6;
+    default:
+      return -1;
+  }
 };

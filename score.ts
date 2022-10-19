@@ -1,25 +1,57 @@
-import { readInput } from "./helpers";
+import { readInput, getNumberFromString } from "./helpers";
 import { printCategories } from "./printer";
 import { Player, Die, ScoreElement } from "./types";
 
 export const updateScore = (player: Player, dice: Die[]): Player => {
   const category = promptForChosenCategory(player);
   const score = calculateScoreValue(dice, category);
-  const scoreElementIndex = player.score.findIndex(
-    (s) => s.label === category.label
-  );
 
+  const recalculatedScore = recalculateScore(player, category, score);
+  const recalculatedBonus = recalculateBonus(recalculatedScore);
+  return recalculateTotal(recalculatedBonus);
+};
+
+const recalculateScore = (
+  player: Player,
+  category: ScoreElement,
+  score: number
+): Player => {
   return {
     ...player,
-    score: [
-      ...player.score.splice(0, scoreElementIndex),
-      {
-        ...player.score[scoreElementIndex],
-        value: score,
-      },
-      ...player.score.splice(scoreElementIndex + 1),
-    ],
+    score: updateScoreArray(player.score, category.label, score),
   };
+};
+
+const recalculateBonus = (player: Player): Player => {
+  const bonusValue = getUpperBonusValue(player.score);
+  return {
+    ...player,
+    score: updateScoreArray(player.score, "Bonus", bonusValue),
+  };
+};
+
+const recalculateTotal = (player: Player): Player => {
+  const totalValue = getTotalValue(player.score);
+  return {
+    ...player,
+    score: updateScoreArray(player.score, "Total", totalValue),
+  };
+};
+
+const updateScoreArray = (
+  score: ScoreElement[],
+  label: string,
+  scoreValue: number
+): ScoreElement[] => {
+  return score.map((s) => {
+    if (s.label === label) {
+      return {
+        ...s,
+        value: scoreValue,
+      };
+    }
+    return s;
+  });
 };
 
 const calculateScoreValue = (dice: Die[], category: ScoreElement): number => {
@@ -33,21 +65,8 @@ const calculateScoreValue = (dice: Die[], category: ScoreElement): number => {
 };
 
 const calculateUpperScore = (dice: Die[], category: ScoreElement): number => {
-  switch (category.label) {
-    case "Ones":
-      return calculateValueSum(dice, 1);
-    case "Twos":
-      return calculateValueSum(dice, 2);
-    case "Threes":
-      return calculateValueSum(dice, 3);
-    case "Fours":
-      return calculateValueSum(dice, 4);
-    case "Fives":
-      return calculateValueSum(dice, 5);
-    case "Sixes":
-      return calculateValueSum(dice, 6);
-  }
-  return 0;
+  const value = getNumberFromString(category.label);
+  return calculateValueSum(dice, value);
 };
 
 const calculateLowerScore = (dice: Die[], category: ScoreElement): number => {
@@ -59,14 +78,15 @@ const calculateLowerScore = (dice: Die[], category: ScoreElement): number => {
       return count >= neededAmount ? count * value : 0;
     case "Full house":
       const { count: count1, value: value1 } = maxSameKind(dice);
-      const { count: count2, value: value2 } = maxSameKind(
+      const { count: count2 } = maxSameKind(
         dice.filter((d) => d.currentValue !== value1)
       );
       return count1 === 3 && count2 === 2 ? 25 : 0;
     case "Small straight":
-      return maxSequenceLength(dice) >= 4 ? 30 : 0;
     case "Large straight":
-      return maxSequenceLength(dice) >= 5 ? 50 : 0;
+      const length = category.label === "Small straight" ? 4 : 5;
+      const points = category.label === "Small straight" ? 30 : 50;
+      return maxSequenceLength(dice) >= length ? points : 0;
     case "Chance":
       return dice.reduce((acc, d) => acc + d.currentValue, 0);
     case "Yahtzee":
@@ -112,6 +132,7 @@ const calculateValueSum = (dice: Die[], value: number): number => {
 
 const maxSequenceLength = (dice: Die[]): number => {
   return dice
+    .sort((a, b) => a.currentValue - b.currentValue)
     .reduce(
       (acc, current, i, arr) => {
         if (i === 0) {
@@ -133,18 +154,28 @@ const maxSequenceLength = (dice: Die[]): number => {
     }, 0);
 };
 
-const calculateBonus = (scores: ScoreElement[]): number => {
+const getUpperBonusValue = (scores: ScoreElement[]): number => {
   const sum = scores.reduce((acc, current) => {
     if (current.location === "upper") {
       return acc + current.value;
     }
     return acc;
   }, 0);
-  return sum >= 63 ? 35 : 0;
+  return sum >= 10 ? 35 : -1;
+};
+
+const getTotalValue = (scores: ScoreElement[]): number => {
+  return scores.reduce((acc, current) => {
+    if (current.label === "Total" || current.value === -1) {
+      return acc;
+    }
+    return acc + current.value;
+  }, 0);
 };
 
 const promptForChosenCategory = (player: Player): ScoreElement => {
   const availableScoreElements = getAvailableScoreElements(player);
+  console.log("");
   printCategories(availableScoreElements);
   const wantedCategory = readInput(
     "Which category do you want to use? ",
