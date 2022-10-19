@@ -17,7 +17,6 @@ export interface ScoreElement {
   value: number;
   location: "upper" | "lower";
   calculated?: boolean;
-  amount?: number;
 }
 
 export interface Die {

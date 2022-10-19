@@ -139,13 +139,10 @@ const maxSequenceLength = (dice: Die[]): number => {
           return [1];
         }
         if (current.currentValue === arr[i - 1].currentValue + 1) {
-          const last = acc.pop() as number;
-          acc.push(last + 1);
-        } else {
-          acc.push(1);
+          const last = acc[acc.length - 1];
+          return [...acc.slice(0, acc.length - 1), last + 1];
         }
-
-        return acc;
+        return [...acc, 1];
       },
       [1]
     )
@@ -193,7 +190,5 @@ const promptForChosenCategory = (player: Player): ScoreElement => {
 };
 
 const getAvailableScoreElements = (player: Player): ScoreElement[] => {
-  return player.score.filter(
-    (s) => (s.amount !== undefined || s.value === -1) && s.calculated !== true
-  );
+  return player.score.filter((s) => s.value === -1 && s.calculated !== true);
 };
