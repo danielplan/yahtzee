@@ -24,6 +24,9 @@ export const printTable = (rows: string[][]) => {
 
       if (j < cells.length - 1) {
         rowText += "\t";
+        if (cell.length < 5) {
+          rowText += "\t";
+        }
         if (cell.length < 10) {
           rowText += "\t";
         }

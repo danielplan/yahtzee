@@ -4,7 +4,7 @@ import { printCategories } from "../helpers/printer";
 import type { Player, Die, ScoreElement } from "../helpers/types";
 
 export const updateScore = (player: Player, dice: Die[]): Player => {
-  const category = promptForChosenCategory(player);
+  const category = promptForChosenCategory(player, dice);
   const score = calculateScoreValue(dice, category);
 
   const recalculatedScore = recalculateScore(player, category, score);
@@ -55,7 +55,10 @@ const updateScoreArray = (
   });
 };
 
-const calculateScoreValue = (dice: Die[], category: ScoreElement): number => {
+export const calculateScoreValue = (
+  dice: Die[],
+  category: ScoreElement
+): number => {
   if (category.location === "upper") {
     return calculateUpperScore(dice, category);
   }
@@ -67,7 +70,8 @@ const calculateScoreValue = (dice: Die[], category: ScoreElement): number => {
 
 const calculateUpperScore = (dice: Die[], category: ScoreElement): number => {
   const value = getNumberFromString(category.label);
-  return calculateValueSum(dice, value);
+  const sum = calculateValueSum(dice, value);
+  return sum === 0 ? -1 : sum;
 };
 
 const calculateLowerScore = (dice: Die[], category: ScoreElement): number => {
@@ -171,10 +175,10 @@ const getTotalValue = (scores: ScoreElement[]): number => {
   }, 0);
 };
 
-const promptForChosenCategory = (player: Player): ScoreElement => {
+const promptForChosenCategory = (player: Player, dice: Die[]): ScoreElement => {
   const availableScoreElements = getAvailableScoreElements(player);
   console.log("");
-  printCategories(availableScoreElements);
+  printCategories(availableScoreElements, dice);
   const wantedCategory = readInput(
     "Which category do you want to use? ",
     (input) =>

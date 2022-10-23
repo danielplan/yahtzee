@@ -1,16 +1,18 @@
+import { calculateScoreValue } from "./../game/score";
 import { colorToCode, printTable, resetColor } from "./helpers";
 import type { Die, Player, ScoreElement } from "./types";
 
-export const printCategories = (ScoreElements: ScoreElement[]) => {
+export const printCategories = (ScoreElements: ScoreElement[], dice: Die[]) => {
   console.log("Available categories:");
   ScoreElements.forEach((s) => {
-    console.log("✘  " + s.label);
+    const scoreValue = parseScoreValue(calculateScoreValue(dice, s));
+    console.log("✘  " + s.label + " (Points: " + scoreValue + ")");
   });
 };
 
 export const printDice = (dice: Die[]) => {
   console.log("\n\n");
-  const firstRow = ["Die N.", "Value", "Fixed"];
+  const firstRow = ["Die", "Value", "Fixed"];
   printTable([
     firstRow,
     ...dice.map((d) => [
