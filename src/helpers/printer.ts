@@ -2,6 +2,11 @@ import { calculateScoreValue } from "./../game/score";
 import { colorToCode, printTable, resetColor } from "./helpers";
 import type { Die, Player, ScoreElement } from "./types";
 
+// Printing functions for the game
+// ------------------------------
+// They return void to avoid cluttering the code with console.log statements
+// besides the log statements, they are pure functions
+
 export const printCategories = (ScoreElements: ScoreElement[], dice: Die[]) => {
   printTitle("Available Categories:");
   ScoreElements.forEach((s) => {
@@ -39,7 +44,10 @@ export const printScores = (players: Player[]) => {
   const rows = players.reduce((acc, p) => {
     return p.score.map((s, i) => {
       const value = parseScoreValue(s.value);
-      return acc[i] ? [...acc[i], value] : [s.label, value];
+      if (acc[i] && acc[i].length > 0) {
+        return [...acc[i], value];
+      }
+      return [s.label, value];
     });
   }, [] as string[][]);
 

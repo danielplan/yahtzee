@@ -22,7 +22,8 @@ export const printTable = (rows: string[][]) => {
       return row
         .map((cell) => {
           const value = cell.trim();
-          const padding = " ".repeat(19 - value.length);
+          const length = value.replace(/\x1b\[\d+m/g, "").length;
+          const padding = " ".repeat(19 - length);
           return value + padding;
         })
         .join("│ ");
