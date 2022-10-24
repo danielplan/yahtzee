@@ -3,11 +3,15 @@ import { colorToCode, printTable, resetColor } from "./helpers";
 import type { Die, Player, ScoreElement } from "./types";
 
 export const printCategories = (ScoreElements: ScoreElement[], dice: Die[]) => {
-  console.log("Available categories:");
+  printTitle("Available Categories:");
   ScoreElements.forEach((s) => {
     const scoreValue = parseScoreValue(calculateScoreValue(dice, s));
-    console.log("✘  " + s.label + " (Points: " + scoreValue + ")");
+    console.log(` ✘  ${s.label} \x1b[3m(Points: ${scoreValue})${resetColor}`);
   });
+};
+
+const printTitle = (title: string) => {
+  console.log(`\x1b[1m${title}${resetColor}`);
 };
 
 export const printDice = (dice: Die[]) => {
@@ -24,20 +28,21 @@ export const printDice = (dice: Die[]) => {
 };
 
 export const printScores = (players: Player[]) => {
-  console.log("\n\n\n--- Current Scores ---\n");
-  const firstRow = ["Type"];
-
-  let rows: string[][] = [];
-  players.forEach((p) => {
-    firstRow.push("Score of " + p.color.code + p.color.label + resetColor);
-    p.score.forEach((s, i) => {
-      if (!rows[i]) {
-        rows[i] = [s.label];
-      }
+  console.log("\n\n");
+  printTitle("Current Scores:");
+  const firstRow = [
+    "Type",
+    ...players.map(
+      (p) => `${p.color.code}Player ${p.color.label}${resetColor}`
+    ),
+  ];
+  const rows = players.reduce((acc, p) => {
+    return p.score.map((s, i) => {
       const value = parseScoreValue(s.value);
-      rows[i].push(value);
+      return acc[i] ? [...acc[i], value] : [s.label, value];
     });
-  });
+  }, [] as string[][]);
+
   printTable([firstRow, ...rows]);
 };
 
@@ -47,8 +52,8 @@ const parseScoreValue = (value: number): string => {
 };
 
 export const printColors = (): void => {
-  console.log("Available colors:");
+  printTitle("Available Colors:");
   colorToCode.forEach((code, label) => {
-    console.log("✘  " + code + label + resetColor);
+    console.log(" ✘  " + code + label + resetColor);
   });
 };

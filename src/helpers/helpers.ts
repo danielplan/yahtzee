@@ -17,27 +17,18 @@ export const resetColor = "\x1b[0m";
 export const throwDie = (): number => Math.trunc(Math.random() * 6) + 1;
 
 export const printTable = (rows: string[][]) => {
-  rows.forEach((row, i, rows) => {
-    let rowText = "";
-    row.forEach((cell, j, cells) => {
-      rowText += cell;
-
-      if (j < cells.length - 1) {
-        rowText += "\t";
-        if (cell.length < 5) {
-          rowText += "\t";
-        }
-        if (cell.length < 10) {
-          rowText += "\t";
-        }
-        rowText += "| ";
-      }
-    });
-    console.log(rowText);
-    if (i < rows.length - 1) {
-      console.log("-".repeat(row.length * 16));
-    }
-  });
+  const string = rows
+    .map((row) => {
+      return row
+        .map((cell) => {
+          const value = cell.trim();
+          const padding = " ".repeat(19 - value.length);
+          return value + padding;
+        })
+        .join("│ ");
+    })
+    .join("\n" + "─".repeat(rows[0].length * 20) + "\n");
+  console.log(string);
 };
 
 type ValidationFunction = (input: string) => boolean;
