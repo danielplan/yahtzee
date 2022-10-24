@@ -16,12 +16,17 @@ export const curateWinner = (game: Game): Game => {
   return game;
 };
 
+const getTotalScore = (player: Player): number => {
+  return player.score.find((s) => s.label === "Total")?.value || 0;
+};
+
 const findWinners = (game: Game): Player[] => {
   return game.players.reduce((winners, player) => {
     if (winners.length === 0) return [player];
-    if (player.score[0].value > winners[0].score[0].value) return [player];
-    if (player.score[0].value === winners[0].score[0].value)
-      return [...winners, player];
+    const winnerTotal = getTotalScore(winners[0]);
+    const playerTotal = getTotalScore(player);
+    if (playerTotal > winnerTotal) return [player];
+    if (playerTotal === winnerTotal) return [...winners, player];
     return winners;
   }, [] as Player[]);
 };
